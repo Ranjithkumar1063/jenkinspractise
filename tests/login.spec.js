@@ -12,6 +12,7 @@ test('Login @smoke', async ({ page }) => {
 await page.getByPlaceholder('Password').fill('123');
 await page.locator("//button[text()='SUBMIT']").click()
 
+
 }
     
 )

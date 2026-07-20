@@ -1,16 +1,10 @@
 pipeline {
     agent any
 
-    //  environment {
-    //     APP_LOGIN = credentials('healthcare-login')
-    //     APP_USERNAME = "${APP_LOGIN_USR}"
-    //     APP_PASSWORD = "${APP_LOGIN_PSW}"
-    // }
-
     parameters {
         choice(
             name: 'TEST_SUITE',
-            choices: ['Smoke', 'Regression', 'All'],
+            choices: ['Smoke', 'Regression', 'Smoke+Regression', 'All'],
             description: 'Select Test Suite'
         )
     }
@@ -39,12 +33,28 @@ pipeline {
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    if (params.TEST_SUITE == 'Smoke') {
-                        bat 'npx playwright test --grep "@Smoke"'
-                    } else if (params.TEST_SUITE == 'Regression') {
-                        bat 'npx playwright test --grep "@Regression"'
-                    } else {
-                        bat 'npx playwright test'
+
+                    switch(params.TEST_SUITE) {
+
+                        case 'Smoke':
+                            echo "Executing Smoke Suite"
+                            bat 'npx playwright test --grep "@Smoke"'
+                            break
+
+                        case 'Regression':
+                            echo "Executing Regression Suite"
+                            bat 'npx playwright test --grep "@Regression"'
+                            break
+
+                        case 'Smoke+Regression':
+                            echo "Executing Smoke and Regression Suites"
+                            bat 'npx playwright test --grep "@Smoke|@Regression"'
+                            break
+
+                        case 'All':
+                            echo "Executing Complete Test Suite"
+                            bat 'npx playwright test'
+                            break
                     }
                 }
             }
@@ -73,12 +83,16 @@ pipeline {
     }
 
     post {
+        always {
+            echo "Pipeline Execution Completed"
+        }
+
         success {
-            echo 'Playwright Tests Executed Successfully'
+            echo "Playwright Tests Executed Successfully"
         }
 
         failure {
-            echo 'Playwright Test Execution Failed'
+            echo "Playwright Test Execution Failed"
         }
     }
 }
