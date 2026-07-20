@@ -1,7 +1,7 @@
 
 import {test,expect} from '@playwright/test';
 
-test('Login @smoke', async ({ page }) => {
+test('Login @Smoke', async ({ page }) => {
 
  await page.goto("http://49.249.29.4:8081/TestServer/Build/Health_Care_Hospital_System/")
  
