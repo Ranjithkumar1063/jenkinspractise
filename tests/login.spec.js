@@ -12,8 +12,6 @@ test('Login @Smoke', async ({ page }) => {
 await page.getByPlaceholder('Password').fill('123');
 await page.locator("//button[text()='SUBMIT']").click()
 console.log("success")
+console.log("success login")
 
-
-}
-    
-)
+})
